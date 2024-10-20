@@ -1,125 +1,113 @@
-CREATE TABLE Provincias (
-    ID_provincia NUMBER(1) PRIMARY KEY,
-    Nombre VARCHAR2(10) NOT NULL
+-- Creación de la tabla PROVINCIAS
+CREATE TABLE PROVINCIAS (
+    ID_PROVINCIA NUMBER PRIMARY KEY,
+    NOMBRE VARCHAR2(100) NOT NULL
 );
 
-CREATE TABLE Cantones (
-    ID_Canton NUMBER(3) PRIMARY KEY,
-    Nombre VARCHAR2(50) NOT NULL,
-    Provincias_ID_provincia NUMBER(1),
-    FOREIGN KEY (Provincias_ID_provincia) REFERENCES Provincias(ID_provincia)
+-- Creación de la tabla CANTONES
+CREATE TABLE CANTONES (
+    ID_CANTON NUMBER PRIMARY KEY,
+    NOMBRE VARCHAR2(100) NOT NULL,
+    ID_PROVINCIA NUMBER,
+    FOREIGN KEY (ID_PROVINCIA) REFERENCES PROVINCIAS(ID_PROVINCIA)
 );
 
-CREATE TABLE Distritos (
-    ID_Distrito NUMBER(3) PRIMARY KEY,
-    Nombre VARCHAR2(50) NOT NULL,
-    Cantones_ID_Canton NUMBER(3),
-    FOREIGN KEY (Cantones_ID_Canton) REFERENCES Cantones(ID_Canton)
+-- Creación de la tabla DISTRITOS
+CREATE TABLE DISTRITOS (
+    ID_DISTRITO NUMBER PRIMARY KEY,
+    NOMBRE VARCHAR2(100) NOT NULL,
+    ID_CANTON NUMBER,
+    FOREIGN KEY (ID_CANTON) REFERENCES CANTONES(ID_CANTON)
 );
 
-CREATE TABLE Locales (
-    ID_local NUMBER(3) PRIMARY KEY,
-    Codigo_local VARCHAR2(20) NOT NULL,
-    Direccion VARCHAR2(60),
-    Telefono NUMBER(8),
-    Distritos_ID_Distrito NUMBER(3),
-    FOREIGN KEY (Distritos_ID_Distrito) REFERENCES Distritos(ID_Distrito)
+-- Creación de la tabla LOCALES
+CREATE TABLE LOCALES (
+    ID_LOCAL NUMBER PRIMARY KEY,
+    NOMBRE VARCHAR2(100) NOT NULL,
+    ID_DISTRITO NUMBER,
+    FOREIGN KEY (ID_DISTRITO) REFERENCES DISTRITOS(ID_DISTRITO)
 );
 
-CREATE TABLE Proveedores (
-    ID_proveedor NUMBER(4) PRIMARY KEY,
-    Nombre VARCHAR2(50),
-    Cedula_Juridica VARCHAR2(12),
-    Direccion VARCHAR2(100),
-    Telefono NUMBER(8),
-    email VARCHAR2(50),
-    Distritos_ID_Distrito NUMBER(3),
-    FOREIGN KEY (Distritos_ID_Distrito) REFERENCES Distritos(ID_Distrito)
+-- Creación de la tabla PROVEEDORES
+CREATE TABLE PROVEEDORES (
+    ID_PROVEEDOR NUMBER PRIMARY KEY,
+    NOMBRE VARCHAR2(100) NOT NULL
 );
 
-CREATE TABLE Productos (
-    ID_producto NUMBER(6) PRIMARY KEY,
-    Nombre VARCHAR2(50) NOT NULL,
-    Descripcion VARCHAR2(200),
-    Precio_Referencia NUMBER(7,2),
-    ID_categoria NUMBER(3),
-    ID_fabricante NUMBER(4),
-    FOREIGN KEY (ID_categoria) REFERENCES Categorias(ID_categoria),
-    FOREIGN KEY (ID_fabricante) REFERENCES Fabricante(ID_fabricante)
+-- Creación de la tabla PAISES
+CREATE TABLE PAISES (
+    ID_PAIS NUMBER PRIMARY KEY,
+    NOMBRE VARCHAR2(100) NOT NULL
 );
 
-CREATE TABLE Fabricante (
-    ID_fabricante NUMBER(4) PRIMARY KEY,
-    Nombre VARCHAR2(50) NOT NULL,
-    Paises_ID_Pais CHAR(3),
-    FOREIGN KEY (Paises_ID_Pais) REFERENCES Paises(ID_Pais)
+-- Creación de la tabla CATEGORIAS
+CREATE TABLE CATEGORIAS (
+    ID_CATEGORIA NUMBER PRIMARY KEY,
+    NOMBRE VARCHAR2(100) NOT NULL
 );
 
-CREATE TABLE Paises (
-    ID_Pais CHAR(3) PRIMARY KEY,
-    Nombre VARCHAR2(30) NOT NULL
+-- Creación de la tabla CLIENTES
+CREATE TABLE CLIENTES (
+    ID_CLIENTE NUMBER PRIMARY KEY,
+    NOMBRE VARCHAR2(100) NOT NULL
 );
 
-CREATE TABLE Categorias (
-    ID_categoria NUMBER(3) PRIMARY KEY,
-    Descripcion VARCHAR2(50)
+-- Creación de la tabla VENTAS
+CREATE TABLE VENTAS (
+    ID_VENTA NUMBER PRIMARY KEY,
+    FECHA DATE NOT NULL,
+    ID_CLIENTE NUMBER,
+    FOREIGN KEY (ID_CLIENTE) REFERENCES CLIENTES(ID_CLIENTE)
 );
 
-CREATE TABLE Unidades (
-    ID_Unidad NUMBER(7) PRIMARY KEY,
-    Num_serie NUMBER(8),
-    Productos_ID_producto NUMBER(6),
-    Locales_ID_local NUMBER(3),
-    Fecha_ingreso DATE,
-    Disponible CHAR(1),
-    FOREIGN KEY (Productos_ID_producto) REFERENCES Productos(ID_producto),
-    FOREIGN KEY (Locales_ID_local) REFERENCES Locales(ID_local)
+-- Creación de la tabla COMPRAS
+CREATE TABLE COMPRAS (
+    ID_COMPRA NUMBER PRIMARY KEY,
+    FECHA DATE NOT NULL,
+    ID_PROVEEDOR NUMBER,
+    FOREIGN KEY (ID_PROVEEDOR) REFERENCES PROVEEDORES(ID_PROVEEDOR)
 );
 
-CREATE TABLE Clientes (
-    ID_Cliente NUMBER(6) PRIMARY KEY,
-    Nombre VARCHAR2(50),
-    Apellidos VARCHAR2(50),
-    Direccion VARCHAR2(100),
-    Telefono NUMBER(8),
-    email VARCHAR2(60),
-    Fecha_Nacimiento DATE
+-- Creación de la tabla FABRICANTE
+CREATE TABLE FABRICANTE (
+    ID_FABRICANTE NUMBER PRIMARY KEY,
+    NOMBRE VARCHAR2(100) NOT NULL
 );
 
-CREATE TABLE Ventas (
-    ID_Venta NUMBER(7) PRIMARY KEY,
-    Fecha DATE,
-    Factura VARCHAR2(10),
-    Estado CHAR(2),
-    Clientes_ID_Cliente NUMBER(6),
-    FOREIGN KEY (Clientes_ID_Cliente) REFERENCES Clientes(ID_Cliente)
+-- Creación de la tabla PRODUCTOS
+CREATE TABLE PRODUCTOS (
+    ID_PRODUCTO NUMBER PRIMARY KEY,
+    NOMBRE VARCHAR2(100) NOT NULL,
+    ID_CATEGORIA NUMBER,
+    ID_FABRICANTE NUMBER,
+    FOREIGN KEY (ID_CATEGORIA) REFERENCES CATEGORIAS(ID_CATEGORIA),
+    FOREIGN KEY (ID_FABRICANTE) REFERENCES FABRICANTE(ID_FABRICANTE)
 );
 
-CREATE TABLE Detalle_Ventas (
-    Ventas_ID_Venta NUMBER(7),
-    ID_Unidad NUMBER(7),
-    Cantidad NUMBER(6),
-    Precio_Venta NUMBER(8,2),
-    PRIMARY KEY (Ventas_ID_Venta, ID_Unidad),
-    FOREIGN KEY (Ventas_ID_Venta) REFERENCES Ventas(ID_Venta),
-    FOREIGN KEY (ID_Unidad) REFERENCES Unidades(ID_Unidad)
+-- Creación de la tabla UNIDADES
+CREATE TABLE UNIDADES (
+    ID_UNIDAD NUMBER PRIMARY KEY,
+    NOMBRE VARCHAR2(100) NOT NULL
 );
 
-CREATE TABLE Compras (
-    ID_compra NUMBER(6) PRIMARY KEY,
-    Fecha DATE,
-    Documento VARCHAR2(15),
-    Proveedores_ID_proveedor NUMBER(4),
-    FOREIGN KEY (Proveedores_ID_proveedor) REFERENCES Proveedores(ID_proveedor)
+-- Creación de la tabla DETALLE_VENTAS
+CREATE TABLE DETALLE_VENTAS (
+    ID_DETALLE_VENTA NUMBER PRIMARY KEY,
+    ID_VENTA NUMBER,
+    ID_PRODUCTO NUMBER,
+    CANTIDAD NUMBER,
+    PRECIO NUMBER,
+    FOREIGN KEY (ID_VENTA) REFERENCES VENTAS(ID_VENTA),
+    FOREIGN KEY (ID_PRODUCTO) REFERENCES PRODUCTOS(ID_PRODUCTO)
 );
 
-CREATE TABLE Detalle_Compras (
-    Compras_ID_compra NUMBER(6),
-    Productos_ID_producto NUMBER(6),
-    Cantidad NUMBER(6),
-    Costo NUMBER(7,2),
-    PRIMARY KEY (Compras_ID_compra, Productos_ID_producto),
-    FOREIGN KEY (Compras_ID_compra) REFERENCES Compras(ID_compra),
-    FOREIGN KEY (Productos_ID_producto) REFERENCES Productos(ID_producto)
+-- Creación de la tabla DETALLE_COMPRAS
+CREATE TABLE DETALLE_COMPRAS (
+    ID_DETALLE_COMPRA NUMBER PRIMARY KEY,
+    ID_COMPRA NUMBER,
+    ID_PRODUCTO NUMBER,
+    CANTIDAD NUMBER,
+    PRECIO NUMBER,
+    FOREIGN KEY (ID_COMPRA) REFERENCES COMPRAS(ID_COMPRA),
+    FOREIGN KEY (ID_PRODUCTO) REFERENCES PRODUCTOS(ID_PRODUCTO)
 );
-
