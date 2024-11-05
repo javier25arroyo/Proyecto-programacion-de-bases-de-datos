@@ -42,7 +42,7 @@ CREATE TABLE Cantones (
 );
 
 CREATE TABLE Distritos (
-    ID_Distrito NUMBER(3) PRIMARY KEY,
+    ID_Distrito NUMBER(5) PRIMARY KEY,
     Nombre VARCHAR2(50),
     Cantones_Id_Canton NUMBER(3),
     CONSTRAINT Distritos_Cantones_FK FOREIGN KEY (Cantones_Id_Canton) REFERENCES Cantones(Id_Canton)
@@ -53,23 +53,23 @@ CREATE TABLE Locales (
     Codigo_local VARCHAR2(20),
     Direccion VARCHAR2(60),
     Telefono NUMBER(8),
-    Distritos_ID_Distrito NUMBER(3),
+    Distritos_ID_Distrito NUMBER(5),
     CONSTRAINT Locales_Distritos_FK FOREIGN KEY (Distritos_ID_Distrito) REFERENCES Distritos(ID_Distrito)
 );
 
 CREATE TABLE Proveedores (
     ID_proveedor NUMBER(4) PRIMARY KEY,
     Nombre VARCHAR2(50),
-    Cedula_Juridica VARCHAR2(12),
+    Cedula_Juridica VARCHAR2(14),
     Direccion VARCHAR2(100),
     Telefono NUMBER,
     Email VARCHAR2(60),
-    Distritos_ID_Distrito NUMBER(3),
+    Distritos_ID_Distrito NUMBER(6),
     CONSTRAINT Proveedores_Distritos_FK FOREIGN KEY (Distritos_ID_Distrito) REFERENCES Distritos(ID_Distrito)
 );
 
 CREATE TABLE Paises (
-    ID_Pais CHAR(3) PRIMARY KEY,
+    ID_Pais CHAR(4) PRIMARY KEY,
     Nombre VARCHAR2(30)
 );
 
@@ -84,7 +84,7 @@ CREATE TABLE Clientes (
     Apellidos VARCHAR2(60),
     Direccion VARCHAR2(100),
     Telefono NUMBER(8),
-    Email VARCHAR2(60),
+    Email VARCHAR2(100),
     Fecha_Nacimiento DATE
 );
 
@@ -108,7 +108,7 @@ CREATE TABLE Compras (
 CREATE TABLE Fabricante (
     ID_fabricante NUMBER(4) PRIMARY KEY,
     Nombre VARCHAR2(40),
-    Paises_ID_Pais CHAR(3),
+    Paises_ID_Pais CHAR(4),
     CONSTRAINT Fabricante_Paises_FK FOREIGN KEY (Paises_ID_Pais) REFERENCES Paises(ID_Pais)
 );
 
