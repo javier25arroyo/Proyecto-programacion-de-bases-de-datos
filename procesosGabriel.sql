@@ -62,6 +62,10 @@ JOIN
 
 ------------------------------------------------------
 --RegistrarVenta
+CREATE SEQUENCE Ventas_SEQ
+START WITH 1  
+INCREMENT BY 1;
+
 CREATE OR REPLACE PROCEDURE RegistrarVenta(
     p_id_cliente NUMBER,
     p_id_producto NUMBER,
