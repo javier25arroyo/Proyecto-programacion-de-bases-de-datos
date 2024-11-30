@@ -1,5 +1,10 @@
-SELECT * FROM proveedores ORDER BY ID_PROVEEDOR;
----------------------------------------------------
+--Seleccionar todos los proveedores en orden de su ID 
+
+SELECT * FROM Proveedores ORDER BY ID_proveedor;
+
+--Crear N compras para cada proveedor.  N= último dígito de su cédula jurídica 
+--3 La fecha de la compra será a partir del '15/01/2023' + 7*ID_Proveedor 
+
 CREATE SEQUENCE Compras_SEQ
 START WITH 1  
 INCREMENT BY 1;
@@ -7,6 +12,7 @@ INCREMENT BY 1;
 CREATE SEQUENCE Unidades_SEQ
 START WITH 1  
 INCREMENT BY 1;
+
 ----------------------------------------------------
 INSERT INTO Compras (ID_compra, Fecha, Documento, Proveedores_ID_proveedor)
 SELECT 
@@ -20,9 +26,9 @@ FROM
 WHERE 
     CompraNumero <= TO_NUMBER(SUBSTR(p.Cedula_Juridica, -1)); 
 
-select * from compras;
+select * from compras
 ----------------------------------------------------
---Cada COMPRA tendrÃ¡ M DETALLES_COMPRA. SegÃºn sea el Ãºltimo dÃ­gito de la fecha de compra.  MOD(to_char(fecha,'dd'),3)+3
+--Cada COMPRA tendrá M DETALLES_COMPRA. Según sea el último dígito de la fecha de compra.  MOD(to_char(fecha,'dd'),3)+3
 --Seleccionar aleatoriamente los M PRODUCTOS para cada detalle de compra
 --Asignar la cantidad aleatoriamente entre 3 y 10 
 --asignar COSTO = PRECIO_REFERENCIA *0.8 
@@ -43,7 +49,7 @@ INSERT INTO Detalle_Compras (Compras_ID_compra, Productos_ID_producto, Cantidad,
 SELECT * FROM detalle_compras;
 
 ----------------------------------------------------
---SegÃºn la CANTIDAD asignada, crear UNIDADES
+--Según la CANTIDAD asignada, crear UNIDADES
 --Asignar NUMERO_SERIE aleatorio 
 --FECHA_INGRESO = Fecha de COMPRAS
 --Asignar un LOCAL aleatorio
@@ -59,13 +65,30 @@ FROM
     Detalle_Compras dc
 JOIN 
     Compras c ON dc.Compras_ID_compra = c.ID_compra;
+SELECT * FROM unidades;
 
-------------------------------------------------------
+
+---------------------------------------------------Datos para RegistrarVenta
+INSERT INTO Clientes (ID_Cliente, Nombre, Apellidos, Direccion, Telefono, Email, Fecha_Nacimiento)
+VALUES (101, 'Juan', 'Pérez', 'Dirección 1', 88888888, 'juan.perez@example.com', TO_DATE('1990-01-01', 'YYYY-MM-DD'));
+
+INSERT INTO Locales (ID_local, Codigo_Local, Direccion, Telefono)
+VALUES (301, 'LOC-A', 'Dirección del Local A', 12345678);
+
+INSERT INTO Productos (ID_Producto, Nombre, Descripcion, Precio_Referencia)
+VALUES (201, 'Producto A', 'Descripción del Producto A', 100.00);
+
+INSERT INTO Unidades (ID_Unidad, Num_serie, Productos_ID_Producto, Locales_ID_Local, Fecha_ingreso, Disponible)
+VALUES (401, 98765432, 201, 301, SYSDATE, 'Y');
+
+SELECT * FROM Clientes WHERE ID_Cliente = 101;
+SELECT * FROM Productos WHERE ID_Producto = 201;
+SELECT * FROM Unidades WHERE Productos_ID_Producto = 201 AND Locales_ID_Local = 301 AND Disponible = 'Y';
+SELECT * FROM Locales WHERE ID_Local = 301;
+
+
+----------------------------------------------------
 --RegistrarVenta
-CREATE SEQUENCE Ventas_SEQ
-START WITH 1  
-INCREMENT BY 1;
-
 CREATE OR REPLACE PROCEDURE RegistrarVenta(
     p_id_cliente NUMBER,
     p_id_producto NUMBER,
@@ -97,10 +120,40 @@ BEGIN
     COMMIT;
 END;
 /
-----------------------------------------------------
+select * from Unidades
+----------------------------------------------------Resultados
+BEGIN
+    RegistrarVenta(101, 201, 301, 1);
+END;
+
+SELECT * FROM Ventas WHERE Clientes_ID_Cliente = 101;
+
+SELECT * FROM Detalle_ventas WHERE Ventas_ID_Venta = (SELECT MAX(ID_Venta) FROM Ventas);
+
+SELECT * FROM Unidades WHERE Productos_ID_Producto = 201 AND Locales_ID_Local = 301;
+
+---------------------------------------------------Datos para RegistrarCompra
+
+INSERT INTO Distritos (ID_Distrito, Nombre)
+VALUES (10001, 'Distrito 1');
+
+INSERT INTO Distritos (ID_Distrito, Nombre)
+VALUES (10002, 'Distrito 2');
 
 
+INSERT INTO Proveedores (ID_Proveedor, Nombre, Cedula_Juridica, Direccion, Telefono, Distritos_ID_Distrito)
+VALUES (301, 'Proveedor B', '987654321', 'Dirección del Proveedor B', 88885555, 10001);
+
+INSERT INTO Productos (ID_Producto, Nombre, Descripcion, Precio_Referencia)
+VALUES (402, 'Producto C', 'Descripción del Producto C', 175.00);
+
+INSERT INTO Locales (ID_Local, Codigo_Local, Direccion, Telefono, Distritos_ID_Distrito)
+VALUES (401, 'Local B', 'Dirección del Local B', 22223333, 10002);
+
+
+
 ----------------------------------------------------
+
 --RegistrarCompra
 CREATE OR REPLACE PROCEDURE RegistrarCompra(
     p_id_proveedor NUMBER,
@@ -137,3 +190,15 @@ BEGIN
     COMMIT;
 END;
 /
+----------------------------------------------------Resultados
+BEGIN
+    RegistrarCompra(301, 402, 1);
+END;
+/
+
+SELECT * FROM Proveedores WHERE ID_Proveedor = 301;
+SELECT * FROM Productos WHERE ID_Producto = 402;
+
+SELECT * FROM Compras WHERE Proveedores_ID_Proveedor = 301;
+SELECT * FROM Unidades WHERE Productos_ID_Producto = 402;
+SELECT * FROM Detalle_Compras WHERE Compras_ID_Compra = (SELECT MAX(ID_Compra) FROM Compras);
