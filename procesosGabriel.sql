@@ -2,8 +2,8 @@
 
 SELECT * FROM Proveedores ORDER BY ID_proveedor;
 
---Crear N compras para cada proveedor.  N= último dígito de su cédula jurídica 
---3 La fecha de la compra será a partir del '15/01/2023' + 7*ID_Proveedor 
+--Crear N compras para cada proveedor.  N= ï¿½ltimo dï¿½gito de su cï¿½dula jurï¿½dica 
+--3 La fecha de la compra serï¿½ a partir del '15/01/2023' + 7*ID_Proveedor 
 
 CREATE SEQUENCE Compras_SEQ
 START WITH 1  
@@ -28,7 +28,7 @@ WHERE
 
 select * from compras
 ----------------------------------------------------
---Cada COMPRA tendrá M DETALLES_COMPRA. Según sea el último dígito de la fecha de compra.  MOD(to_char(fecha,'dd'),3)+3
+--Cada COMPRA tendrï¿½ M DETALLES_COMPRA. Segï¿½n sea el ï¿½ltimo dï¿½gito de la fecha de compra.  MOD(to_char(fecha,'dd'),3)+3
 --Seleccionar aleatoriamente los M PRODUCTOS para cada detalle de compra
 --Asignar la cantidad aleatoriamente entre 3 y 10 
 --asignar COSTO = PRECIO_REFERENCIA *0.8 
@@ -49,7 +49,7 @@ INSERT INTO Detalle_Compras (Compras_ID_compra, Productos_ID_producto, Cantidad,
 SELECT * FROM detalle_compras;
 
 ----------------------------------------------------
---Según la CANTIDAD asignada, crear UNIDADES
+--Segï¿½n la CANTIDAD asignada, crear UNIDADES
 --Asignar NUMERO_SERIE aleatorio 
 --FECHA_INGRESO = Fecha de COMPRAS
 --Asignar un LOCAL aleatorio
@@ -70,13 +70,13 @@ SELECT * FROM unidades;
 
 ---------------------------------------------------Datos para RegistrarVenta
 INSERT INTO Clientes (ID_Cliente, Nombre, Apellidos, Direccion, Telefono, Email, Fecha_Nacimiento)
-VALUES (101, 'Juan', 'Pérez', 'Dirección 1', 88888888, 'juan.perez@example.com', TO_DATE('1990-01-01', 'YYYY-MM-DD'));
+VALUES (101, 'Juan', 'PÃ©rez', 'Direccion 1', 88888888, 'juan.perez@example.com', TO_DATE('1990-01-01', 'YYYY-MM-DD'));
 
 INSERT INTO Locales (ID_local, Codigo_Local, Direccion, Telefono)
-VALUES (301, 'LOC-A', 'Dirección del Local A', 12345678);
+VALUES (301, 'LOC-A', 'DirecciÃ³n del Local A', 12345678);
 
 INSERT INTO Productos (ID_Producto, Nombre, Descripcion, Precio_Referencia)
-VALUES (201, 'Producto A', 'Descripción del Producto A', 100.00);
+VALUES (201, 'Producto A', 'DescripciÃ³n del Producto A', 100.00);
 
 INSERT INTO Unidades (ID_Unidad, Num_serie, Productos_ID_Producto, Locales_ID_Local, Fecha_ingreso, Disponible)
 VALUES (401, 98765432, 201, 301, SYSDATE, 'Y');
@@ -142,13 +142,13 @@ VALUES (10002, 'Distrito 2');
 
 
 INSERT INTO Proveedores (ID_Proveedor, Nombre, Cedula_Juridica, Direccion, Telefono, Distritos_ID_Distrito)
-VALUES (301, 'Proveedor B', '987654321', 'Dirección del Proveedor B', 88885555, 10001);
+VALUES (301, 'Proveedor B', '987654321', 'DirecciÃ³n del Proveedor B', 88885555, 10001);
 
 INSERT INTO Productos (ID_Producto, Nombre, Descripcion, Precio_Referencia)
-VALUES (402, 'Producto C', 'Descripción del Producto C', 175.00);
+VALUES (402, 'Producto C', 'DescripciÃ³n del Producto C', 175.00);
 
 INSERT INTO Locales (ID_Local, Codigo_Local, Direccion, Telefono, Distritos_ID_Distrito)
-VALUES (401, 'Local B', 'Dirección del Local B', 22223333, 10002);
+VALUES (401, 'Local B', 'DirecciÃ³n del Local B', 22223333, 10002);
 
 
 
